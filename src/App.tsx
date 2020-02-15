@@ -5,9 +5,24 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { Table } from 'react-bootstrap';
 
-const tableStyle = {
-    width: '100%',
-};
+class TableEntry {
+    constructor(public name: string, public id: string, public password: string) {}
+
+    render () {
+        return (
+            <tr>
+                <th>{this.name}</th>
+                <th>{this.id}</th>
+                <th>{this.password}</th>
+            </tr>
+        )
+    }
+}
+
+const exampleData = [
+    new TableEntry("Sean", "spwilson27@gmail.com", "super secret"),
+    new TableEntry("Sean", "spwilson27@gmail.com", "super secret"),
+]
 
 function App() {
     return (
@@ -20,16 +35,7 @@ function App() {
             <th>Password</th>
         </tr>
         <tbody>
-            <tr>
-                <th>Sean</th>
-                <th>spwilson27@gmail.com</th>
-                <th>Secret pass</th>
-            </tr>
-            <tr>
-                <th>Sean</th>
-                <th>spwilson27@gmail.com</th>
-                <th>Secret pass</th>
-            </tr>
+            {exampleData.map(o => o.render())}
         </tbody>
         </Table>
         </header>
