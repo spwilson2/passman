@@ -11,12 +11,14 @@
     "@types/react": "^16.9.0",
     "@types/react-bootstrap": "^0.32.20",
     "@types/react-dom": "^16.9.0",
+    "@types/sjcl": "file:local-types/sjcl",
     "bootstrap": "^4.4.1",
     "normalize.css": "^8.0.1",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "^16.12.0",
     "react-scripts": "3.4.0",
+    "sjcl": "^1.0.8",
     "typescript": "~3.7.2"
   },
   "scripts": {

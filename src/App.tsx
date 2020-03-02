@@ -1,113 +1,78 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import ExportText from './ExportText';
+import {PasswordContainer, PasswordEntry} from './models/Passwords';
 
-class TableEntry {
-    private state: any;
-    constructor(name: string, id: string, password: string) {
-        this.state = {
-            "name": name,
-            "id": id,
-            "password": password,
-            "hidden": true,
-        };
+interface NullablePCState {
+    container?: PasswordContainer;
+}
+
+
+class PasswordTableComponent extends React.Component<{}, NullablePCState> {
+
+    constructor(props:any) {
+        super(props);
+        this.state = {};
     }
 
-    renderPassword() {
-        if (this.state.hidden)
-            return ("•".repeat(8));
-        return this.state.password;
+    public handleImportClick() {
+        console.log("Hello")
+    }
+    public handleExportClick() {
+        console.log("Hello")
     }
 
-    render () {
+    private renderOptTable() {
+        if (!('container' in this.state))
+            return "";
         return (
-            <tr>
-                <td>{this.state.name}</td>
-                <td>{this.state.id}</td>
-                <td>{this.renderPassword()}</td>
-            </tr>
+            <table className="pure-table">
+            <thead>
+                <tr>
+                    <th> 
+                        Accounts | <button> Add item </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.state.container}
+            </tbody>
+            </table>
+        );
+    }
+
+    public render() {
+        return (
+            <div id="password-table">
+                {/* Opens the import dialogue.*/}
+                <button onClick={this.handleImportClick}> Import </button>
+                {/* Opens the export dialogue.*/}
+                <button onClick={this.handleExportClick}> Export </button>
+
+                {this.renderOptTable()}
+            </div>
         )
     }
 }
 
-class PasswordTableComponent extends React.Component<{}, any> {
-
+class App extends React.Component<{}, NullablePCState> {
     constructor(props:any) {
         super(props);
+        this.state = {};
     }
 
     render() {
         return (
-            <table className="pure-table">
-            <tr>
-                <th>Name</th>
-                <th>ID (Email, Username, Etc.)</th>
-                <th>Password</th>
-            </tr>
-            <tbody>
-                {exampleData.map(o => o.render())}
-            </tbody>
-            </table>
-        )
+            <div className="App">
+            <header >
+            </header>
+                 <div >
+                    <h1> Passman </h1>
+                </div>           
+                <PasswordTableComponent />
+            </div>
+        );
     }
 }
-
-const exampleData = [
-    new TableEntry("Dropbox", "spwilson27@gmail.com", "super secret"),
-    new TableEntry("Dropbox", "spwilson27@gmail.com", "super secret"),
-]
-
-//class BackendSelectionModal extends React.Component<{}, {show: boolean}> {
-//
-//    constructor(props:any) {
-//        super(props);
-//        this.handleLoad = this.handleLoad.bind(this);
-//        this.state = {show: false};
-//    }
-//
-//    componentDidMount() {
-//        window.addEventListener('load', this.handleLoad);
-//    }
-//
-//    handleLoad() {
-//        this.setState({show: false});
-//    }
-//
-//    render() {
-//        return (
-//            <Modal show={this.state.show}>
-//                <Modal.Header closeButton>
-//                    <Modal.Title>Backend Selection</Modal.Title>
-//                </Modal.Header>
-//                <Modal.Body>
-//                    <p>
-//                        Select the platform which you'd like to store your encrypted password data in.
-//                    </p>
-//                    <Button>None (Don't save data)</Button>
-//                </Modal.Body>
-//            </Modal>
-//        )
-//    }
-//}
-
-function App() {
-    return (
-        <div className="App">
-        <header className="App-header">
-        </header>
-             <div className="pure-menu pure-menu-horizontal" style={{textAlign:"left"}} >
-                <a className="pure-menu-heading pure-menu-link">Passman</a>
-                <ul className="pure-menu-list">
-                </ul>
-            </div>           
-            <PasswordTableComponent />
-        </div>
-    );
-}
-
-
-/*
- * TODO: Single page app.
- */
 
 export default App;

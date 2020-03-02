@@ -1,0 +1,27 @@
+{
+  "name": "@types/sjcl",
+  "version": "1.0.29",
+  "description": "TypeScript definitions for sjcl",
+  "license": "MIT",
+  "contributors": [
+    "Eugene Chernyshov (https://github.com/Evgenus)",
+    "Vytautas Mizgiris (https://github.com/mizvyt)"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+    "directory": "types/sjcl"
+  },
+  "scripts": {},
+  "dependencies": {},
+  "typesPublisherContentHash": "ae204038df0931a3d87d1c279c984452ace463a332fb46eb4d2336808ef63fa4",
+  "typeScriptVersion": "2.8",
+  "bugs": {
+    "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/issues"
+  },
+  "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped#readme",
+  "keywords": [],
+  "author": ""
+}
