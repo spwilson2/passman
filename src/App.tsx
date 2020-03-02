@@ -1,6 +1,16 @@
 import React from 'react';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    withRouter,
+    RouteComponentProps,
+} from "react-router-dom";
+
 import './App.css';
+import NewText from './NewText';
 import ExportText from './ExportText';
+import ImportText from './ImportText';
 import {PasswordContainer, PasswordEntry} from './models/Passwords';
 
 interface NullablePCState {
@@ -8,23 +18,34 @@ interface NullablePCState {
 }
 
 
-class PasswordTableComponent extends React.Component<{}, NullablePCState> {
+class _PasswordTableComponent extends React.Component<RouteComponentProps<{}>, NullablePCState> {
 
     constructor(props:any) {
         super(props);
         this.state = {};
+        this.handleChildCancel = this.handleChildCancel.bind(this);
+        this.handleCreateSuccess = this.handleCreateSuccess.bind(this);
     }
 
-    public handleImportClick() {
-        console.log("Hello")
+    private handleCreateSuccess(container: PasswordContainer) {
+        this.setState({container: container})
+        this.props.history.push("/");
     }
-    public handleExportClick() {
-        console.log("Hello")
+
+    private handleChildCancel() {
+        console.log("Go back");
+        this.props.history.push("/");
     }
 
     private renderOptTable() {
-        if (!('container' in this.state))
+        if (!this.state.container)
             return "";
+
+        let entries = this.state.container!.entries();
+        let names = [];
+        for (let e in entries) {
+            names.push(e);
+        }
         return (
             <table className="pure-table">
             <thead>
@@ -35,27 +56,61 @@ class PasswordTableComponent extends React.Component<{}, NullablePCState> {
                 </tr>
             </thead>
             <tbody>
-                {this.state.container}
+                {names.map((item) => (
+                    <tr>
+                    item[1]
+                    </tr>
+                ))}
             </tbody>
             </table>
         );
     }
 
     public render() {
+
+        let exportRoute;
+        let exportButton;
+
+        if (this.state.container) {
+            exportButton = ( <button onClick={() => this.props.history.push("/export")}> Export </button> );
+            exportRoute = (
+                  <Route exact path="/export">
+                    <ExportText passwords={this.state.container!}/>
+                  </Route>
+            );
+        }
+        else {
+            exportRoute = (
+                  <Route exact path="/export">
+                        <h2>Error! No passwords loaded.</h2>
+                        <button onClick={this.handleChildCancel}>Go Back</button>
+                  </Route>
+            );
+        }
+
         return (
             <div id="password-table">
-                {/* Opens the import dialogue.*/}
-                <button onClick={this.handleImportClick}> Import </button>
-                {/* Opens the export dialogue.*/}
-                <button onClick={this.handleExportClick}> Export </button>
-
-                {this.renderOptTable()}
+                <Route exact path="/">
+                    <button onClick={() => this.props.history.push("/new")}> New </button>
+                    <button onClick={() => this.props.history.push("/import")}> Import </button>
+                    {exportButton}
+                    {this.renderOptTable()}
+                </Route>
+                <Route path="/import">
+                    <ImportText onCancel={this.handleChildCancel} onSuccess={this.handleCreateSuccess} />
+                </Route>
+                <Route path="/new">
+                    <NewText onCancel={this.handleChildCancel} onSuccess={this.handleCreateSuccess} />
+                </Route>
+                {exportRoute}
             </div>
         )
     }
 }
 
-class App extends React.Component<{}, NullablePCState> {
+let PasswordTableComponent = withRouter(_PasswordTableComponent);
+
+class App extends React.Component<{}, {}> {
     constructor(props:any) {
         super(props);
         this.state = {};
@@ -69,7 +124,11 @@ class App extends React.Component<{}, NullablePCState> {
                  <div >
                     <h1> Passman </h1>
                 </div>           
-                <PasswordTableComponent />
+                <Router>
+                <Switch>
+                    <PasswordTableComponent />
+                </Switch>
+                </Router>
             </div>
         );
     }
