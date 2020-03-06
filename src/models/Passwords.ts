@@ -16,7 +16,7 @@ export interface PasswordEntry {
     name: string,
     login: string,
     password: string,
-    tags: [string],
+    tags: string[],
     notes: string,
 }
 
@@ -136,7 +136,7 @@ export class PasswordContainer {
 
     public entries(): IterableIterator<[number, PasswordEntry]> 
     {
-            return this._entries.entries()
+            return this._entries.entries();
     }
 
     // Serialize the database into a JSON string

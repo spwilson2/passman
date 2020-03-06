@@ -11,6 +11,7 @@ import './App.css';
 import NewText from './NewText';
 import ExportText from './ExportText';
 import ImportText from './ImportText';
+import CreateEntry from './CreateEntry';
 import {PasswordContainer, PasswordEntry} from './models/Passwords';
 
 interface NullablePCState {
@@ -25,6 +26,8 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<{}>, N
         this.state = {};
         this.handleChildCancel = this.handleChildCancel.bind(this);
         this.handleCreateSuccess = this.handleCreateSuccess.bind(this);
+        this.handleAddItem = this.handleAddItem.bind(this);
+        this.handleAddSuccess = this.handleAddSuccess.bind(this);
     }
 
     private handleCreateSuccess(container: PasswordContainer) {
@@ -37,13 +40,24 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<{}>, N
         this.props.history.push("/");
     }
 
+    private handleAddSuccess(entry: PasswordEntry) {
+        this.setState(() => {
+            this.state.container!.addEntry(entry);
+        });
+        this.props.history.push("/");
+    }
+
+    private handleAddItem() {
+        this.props.history.push('/create')
+    }
+
     private renderOptTable() {
         if (!this.state.container)
             return "";
 
         let entries = this.state.container!.entries();
         let names = [];
-        for (let e in entries) {
+        for (let e of entries) {
             names.push(e);
         }
         return (
@@ -51,14 +65,16 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<{}>, N
             <thead>
                 <tr>
                     <th> 
-                        Accounts | <button> Add item </button>
+                        Accounts | <button onClick={this.handleAddItem}> Add item </button>
                     </th>
                 </tr>
             </thead>
             <tbody>
                 {names.map((item) => (
-                    <tr>
-                    item[1]
+                    <tr key={item[0]}>
+                        <td>
+                        {item[1].name}
+                        </td>
                     </tr>
                 ))}
             </tbody>
@@ -70,12 +86,18 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<{}>, N
 
         let exportRoute;
         let exportButton;
+        let createRoute;
 
         if (this.state.container) {
             exportButton = ( <button onClick={() => this.props.history.push("/export")}> Export </button> );
             exportRoute = (
                   <Route exact path="/export">
                     <ExportText passwords={this.state.container!}/>
+                  </Route>
+            );
+            createRoute = (
+                  <Route exact path="/create">
+                    <CreateEntry onCancel={this.handleChildCancel} onSuccess={this.handleAddSuccess} />
                   </Route>
             );
         }
@@ -103,6 +125,7 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<{}>, N
                     <NewText onCancel={this.handleChildCancel} onSuccess={this.handleCreateSuccess} />
                 </Route>
                 {exportRoute}
+                {createRoute}
             </div>
         )
     }
