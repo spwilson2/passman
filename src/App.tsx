@@ -103,7 +103,7 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<any>, 
             exportButton = ( <button onClick={() => this.props.history.push("/export")}> Export </button> );
             exportRoute = (
                   <Route exact path="/export">
-                    <ExportText passwords={this.state.container!}/>
+                    <ExportText entries={this.state.container!} onCancel={this.handleChildCancel}/>
                   </Route>
             );
             createRoute = (

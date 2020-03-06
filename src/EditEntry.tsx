@@ -7,7 +7,7 @@ interface MatchParams {
     id: string;
 }
 
-interface CreateEntryProps extends RouteComponentProps<MatchParams> {
+interface EditEntryProps extends RouteComponentProps<MatchParams> {
     onSuccess: (idx: number, entry: PasswordEntry) => void,
     onCancel: () => void,
         entries: PasswordContainer,
@@ -17,10 +17,10 @@ interface EditEntryState {
     entry: PasswordEntry;
 }
 
-//interface CreateEntryState {
+//interface EditEntryState {
 //}
 
-class EditEntry extends React.Component<CreateEntryProps, EditEntryState> {
+class EditEntry extends React.Component<EditEntryProps, EditEntryState> {
 
     private name = React.createRef<HTMLInputElement>();
     private login = React.createRef<HTMLInputElement>();

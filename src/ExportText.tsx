@@ -1,7 +1,18 @@
 import React from 'react';
-import PasswordContainer from './models/Passwords';
+import {PasswordContainer} from './models/Passwords';
+import {RouteComponentProps, withRouter} from "react-router-dom";
+import autobind from 'auto-bind';
 
-class ExportText extends React.Component<{passwords:PasswordContainer}, {}> {
+interface ExportTextProps extends RouteComponentProps {
+    onCancel: () => void,
+    entries: PasswordContainer,
+}
+
+class ExportText extends React.Component<ExportTextProps, {}> {
+    constructor(props: any) {
+        super(props);
+        autobind(this)
+    }
 
     public handleClick() {
     }
@@ -9,8 +20,7 @@ class ExportText extends React.Component<{passwords:PasswordContainer}, {}> {
     public render() {
         return (
             <div>
-            <textarea>
-                ${this.props.passwords.encryptSerialized()} 
+            <textarea defaultValue={this.props.entries.encryptSerialized()}>
             </textarea>
             <button>Copy to Clipboard</button>
             </div>
@@ -18,4 +28,4 @@ class ExportText extends React.Component<{passwords:PasswordContainer}, {}> {
     }
 }
 
-export default ExportText;
+export default withRouter(ExportText);

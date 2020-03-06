@@ -157,8 +157,8 @@ export class PasswordContainer {
         }
         let data = JSON.stringify(obj);
         // Encrypt it
-        let s = this.manager.encrypt(data);
-        s = JSON.stringify({
+        data = this.manager.encrypt(data);
+        let s = JSON.stringify({
             version: VERSION,
             values: data,
             nextId: this.nextId,
