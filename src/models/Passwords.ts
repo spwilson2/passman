@@ -134,6 +134,14 @@ export class PasswordContainer {
         this._entries.set(this.nextId++, entry);
     }
 
+    public updateEntry(idx: number, entry: PasswordEntry) {
+        this._entries.set(idx, entry);
+    }
+
+    public get(idx: number): PasswordEntry {
+        return this._entries.get(idx)!;
+    }
+
     public entries(): IterableIterator<[number, PasswordEntry]> 
     {
             return this._entries.entries();

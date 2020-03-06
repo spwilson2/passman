@@ -13,6 +13,7 @@ interface CreateEntryProps extends RouteComponentProps {
 
 class CreateEntry extends React.Component<CreateEntryProps, {}> {
 
+    private name = React.createRef<HTMLInputElement>();
     private login = React.createRef<HTMLInputElement>();
     private tags = React.createRef<HTMLInputElement>();
     private password = React.createRef<HTMLInputElement>();
@@ -26,7 +27,7 @@ class CreateEntry extends React.Component<CreateEntryProps, {}> {
 
     private handleFinishClick() {
         let pe = {
-            name: this.login.current!.value,
+            name: this.name.current!.value,
             tags: [this.tags.current!.value],
             password: this.password.current!.value,
             notes: this.notes.current!.value,
@@ -42,7 +43,7 @@ class CreateEntry extends React.Component<CreateEntryProps, {}> {
     public render() {
         return (
             <form>
-                Name: <input ref={this.tags}></input>
+                Name: <input ref={this.name}></input>
                 <br></br>
                 Login: <input ref={this.login}></input>
                 <br></br>
