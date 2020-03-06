@@ -66,8 +66,8 @@ class EncryptionManager {
             let m = this.tryDecrypt(password, data);
             if (m === EncryptionManager.DUMMY_DATA)
                 return new EncryptionManager(password);
-            throw "Decrypted some non-manager data";
         } catch (e) {
+            throw "Decrypted some non-manager data";
         }
         return null;
     }
@@ -110,7 +110,7 @@ export class PasswordContainer {
         if (!('manager' in j)) {
             throw "Parsing invalid object, missing manager prop";
         }
-        if (!('data' in j)) {
+        if (!('values' in j)) {
             throw "Parsing invalid object, missing data prop";
         }
         if (!('nextId' in j)) {
@@ -119,13 +119,18 @@ export class PasswordContainer {
 
         let manager = EncryptionManager.fromSerialized(password, j['manager']);
         if (!manager) {
+            throw "No manager"
             return null;
         }
 
         // Now use the manager to parse our data
-        let data = manager.decrypt(j['data']);
-        let data_obj = JSON.parse(data);
-        let data_map = new Map<number, PasswordEntry>(data_obj.entries());
+        let data_map = new Map<number, PasswordEntry>();
+        let data = manager.decrypt(j['values']);
+        let data_obj : {[id:string]: PasswordEntry} = JSON.parse(data);
+
+        for (let key in data_obj) {
+            data_map.set(parseInt(key), data_obj[key]);
+        }
 
         return new PasswordContainer(j['nextId'], data_map, manager);
     }

@@ -31,6 +31,7 @@ class ImportText extends React.Component<ImportTextProps, {}> {
             this.data.current!.value);
         if (c)
             this.props.onSuccess(c);
+        this.handleCancelClick();
     }
 
     private handleCancelClick() {
