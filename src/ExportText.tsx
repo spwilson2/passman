@@ -17,10 +17,14 @@ class ExportText extends React.Component<ExportTextProps, {}> {
     public handleClick() {
     }
 
+    public encryptEntries() {
+        return btoa(this.props.entries.encryptSerialized());
+    }
+
     public render() {
         return (
             <div>
-            <textarea defaultValue={this.props.entries.encryptSerialized()}>
+            <textarea defaultValue={this.encryptEntries()}>
             </textarea>
             <button>Copy to Clipboard</button>
             </div>

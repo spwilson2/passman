@@ -25,10 +25,14 @@ class ImportText extends React.Component<ImportTextProps, {}> {
     }
 
     private handleImportClick() {
+
+        // TODO Handle error if they give wrong data.
+        let json_data = atob(this.data.current!.value);
+
         // Try and create a password container from the supplied input.
         let c = PasswordContainer.fromSerialized(
             this.password.current!.value, 
-            this.data.current!.value);
+            json_data);
         if (c)
             this.props.onSuccess(c);
         this.handleCancelClick();
