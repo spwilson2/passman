@@ -26,11 +26,11 @@ type DecryptedData = string;
 /*
  *
  */
-class EncryptionManager {
+export class EncryptionManager {
     private static DUMMY_DATA = "WhatsInTheBox:" + VERSION;
-    private masterPassword: string;
     // Dummy data used to test password decryption
     private dummyData: string;
+    private masterPassword: string;
 
     private constructor(password: string) {
         this.masterPassword = password;
@@ -87,16 +87,14 @@ export class PasswordContainer {
 
     private constructor(
         private nextId: number,
-        private _entries: Map<number, PasswordEntry>,
-        private manager: EncryptionManager) 
+        private _entries: Map<number, PasswordEntry>) 
     {
     }
 
-    public static fromPassword(password: string): PasswordContainer {
+    public static newEmpty(): PasswordContainer {
         return new PasswordContainer(
             1,
-            new Map<number, PasswordEntry>(),
-            EncryptionManager.fromPassword(password)
+            new Map<number, PasswordEntry>()
         );
     }
 
@@ -132,7 +130,7 @@ export class PasswordContainer {
             data_map.set(parseInt(key), data_obj[key]);
         }
 
-        return new PasswordContainer(j['nextId'], data_map, manager);
+        return new PasswordContainer(j['nextId'], data_map);
     }
 
     public addEntry(entry: PasswordEntry) {
@@ -153,7 +151,7 @@ export class PasswordContainer {
     }
 
     // Serialize the database into a JSON string
-    public encryptSerialized(): string {
+    public encryptSerialized(manager: EncryptionManager): string {
 
         // Entries will be serialized into an object version of the map
         var obj : any = {};
@@ -162,13 +160,13 @@ export class PasswordContainer {
         }
         let data = JSON.stringify(obj);
         // Encrypt it
-        data = this.manager.encrypt(data);
+        data = manager.encrypt(data);
         let s = JSON.stringify({
             version: VERSION,
             values: data,
             nextId: this.nextId,
             // Manager should be unencrypted
-            manager: this.manager.serialize(),
+            manager: manager.serialize(),
         });
         return s;
     }
