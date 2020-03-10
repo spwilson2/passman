@@ -62,33 +62,52 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<any>, 
     }
 
     private renderOptTable() {
-        if (!this.state.container)
-            return "";
-
-        let entries = this.state.container!.entries();
+        // TODO Break these generators into serparte classes.
         let names = [];
-        for (let e of entries) {
-            names.push(e);
-        }
-        return (
-            <table className="pure-table">
-            <thead>
-                <tr>
-                    <th> 
-                        Accounts | <button onClick={this.handleAddItem}> Add item </button>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {names.map((item) => (
-                    <tr key={item[0]}>
-                        <td>
-                            <button onClick={() => {this.handleEditItem(item[0], item[1])}} >{item[1].name}</button>
-                        </td>
+        let hintMessageOrTable = (
+            <div>
+                <h2>
+                No entires exist! 
+                </h2>
+                <h3>
+                Click "Import" to import an existing database or "Add Entry" to start one! 
+                </h3>
+            </div>
+        );
+
+        if (this.state.container) {
+            let entries = this.state.container!.entries();
+            for (let e of entries) {
+                names.push(e);
+            }
+
+            hintMessageOrTable = (
+                <table className="pure-table">
+                <thead>
+                    <tr>
+                        <th> 
+                            Accounts
+                        </th>
                     </tr>
-                ))}
-            </tbody>
-            </table>
+                </thead>
+                <tbody>
+                    {names.map((item) => (
+                        <tr key={item[0]}>
+                            <td>
+                                <button onClick={() => {this.handleEditItem(item[0], item[1])}} >{item[1].name}</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+                </table>
+            );
+        }
+
+        return (
+            <div>
+                {hintMessageOrTable}
+                <button onClick={this.handleAddItem}> Add Entry </button>
+            </div>
         );
     }
 
@@ -96,7 +115,13 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<any>, 
 
         let exportRoute;
         let exportButton;
-        let createRoute;
+
+        let createRoute = (
+                  <Route exact path="/create">
+                    <CreateEntry onCancel={this.handleChildCancel} onSuccess={this.handleAddSuccess} />
+                  </Route>
+            );
+
         let viewEntryRoute;
 
         if (this.state.container) {
@@ -104,11 +129,6 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<any>, 
             exportRoute = (
                   <Route exact path="/export">
                     <ExportText entries={this.state.container!} onCancel={this.handleChildCancel}/>
-                  </Route>
-            );
-            createRoute = (
-                  <Route exact path="/create">
-                    <CreateEntry onCancel={this.handleChildCancel} onSuccess={this.handleAddSuccess} />
                   </Route>
             );
             viewEntryRoute = (
@@ -129,16 +149,12 @@ class _PasswordTableComponent extends React.Component<RouteComponentProps<any>, 
         return (
             <div id="password-table">
                 <Route exact path="/">
-                    <button onClick={() => this.props.history.push("/new")}> New </button>
                     <button onClick={() => this.props.history.push("/import")}> Import </button>
                     {exportButton}
                     {this.renderOptTable()}
                 </Route>
                 <Route path="/import">
                     <ImportText onCancel={this.handleChildCancel} onSuccess={this.handleCreateSuccess} />
-                </Route>
-                <Route path="/new">
-                    <NewText onCancel={this.handleChildCancel} onSuccess={this.handleCreateSuccess} />
                 </Route>
                 {exportRoute}
                 {createRoute}

@@ -41,6 +41,7 @@ class EditEntry extends React.Component<EditEntryProps, EditEntryState> {
     }
 
     private handleSaveClick() {
+        // TODO Handle no password. We'll need one of at least len 1 to encrypt.
         let pe = {
             name: this.name.current!.value,
             tags: [this.tags.current!.value],
