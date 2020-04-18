@@ -1,6 +1,7 @@
 import React from 'react';
 import PasswordContainer from './models/Passwords';
 import {RouteComponentProps, withRouter} from "react-router-dom";
+import autobind from 'auto-bind';
     
 
 interface ImportTextProps extends RouteComponentProps {
@@ -9,19 +10,22 @@ interface ImportTextProps extends RouteComponentProps {
 }
 
 interface ImportTextState {
-    password: any,
-        data: any,
+    showPassword: boolean,
 }
 
-class ImportText extends React.Component<ImportTextProps, {}> {
+class ImportText extends React.Component<ImportTextProps, ImportTextState> {
 
     private password = React.createRef<HTMLInputElement>();
     private data = React.createRef<HTMLTextAreaElement>();
 
     constructor(props: any) {
         super(props);
-        this.handleCancelClick = this.handleCancelClick.bind(this);
-        this.handleImportClick = this.handleImportClick.bind(this);
+        autobind(this);
+        this.state = {showPassword: false};
+    }
+
+    public componentDidMount() {
+        this.setPasswordDisplay(this.state.showPassword);
     }
 
     private handleImportClick() {
@@ -42,12 +46,24 @@ class ImportText extends React.Component<ImportTextProps, {}> {
         this.props.onCancel();
     }
 
+    private setPasswordDisplay(show: boolean) {
+        this.password.current!.type = show ? "text": "password";
+        this.setState((state: ImportTextState) => {
+            return {showPassword: show}
+        });
+    }
+
+    private handleShowPassword(e: React.ChangeEvent<HTMLInputElement>) {
+        this.setPasswordDisplay(e.target.checked);
+    }
+
     public render() {
         return (
             <form>
-                Password: <input ref={this.password}></input>
+                Master Password: <input autoComplete="current-password" ref={this.password}></input>
                 <br></br>
                 Encrypted Data: <textarea ref={this.data}></textarea>
+                <input type="checkbox" checked={this.state.showPassword} onClick={() => this.setPasswordDisplay(!this.state.showPassword) }  onChange={this.handleShowPassword} /> Show Password
                 <br></br>
                 <button onClick={this.handleCancelClick}>Cancel</button>
                 <button onClick={this.handleImportClick}>Import</button>
