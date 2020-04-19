@@ -1,25 +1,44 @@
-import {DataEncryptor} from './Passwords';
+import * as pw from './Passwords';
 
+let name = "Slippin Jimmy";
 
-// Test encryption
-// Test decryption
+test('Serialize empty returns empty object', () =>{
+    let container = pw.PasswordContainer.newEmpty();
+    let val = container.serialize();
+})
 
-let secretString = 'Hello world!';
-let password = 'pass';
+test('Serialize roundtrip results in original values.', () =>{
+    let container = pw.PasswordContainer.newEmpty();
+    container.add(new pw.PasswordEntry(name, 'login', 'pass'))
+    let serialized = container.serialize();
 
-test('Encrypt + Decrypt resolve to original value', () => {
-    let encryptedString = DataEncryptor.encrypt(secretString, password);
-    let decryptedString = DataEncryptor.decrypt(encryptedString, password);
-    expect(decryptedString).toEqual(secretString);
-});
+    let deserialized = pw.PasswordContainer.newFromSerialized(serialized);
+    expect(container).toEqual(deserialized);
+})
 
-test('Encrypt creates base64 string', () => {
-    let encryptedString = DataEncryptor.encrypt(secretString, password);
+test('getCopyOf does not affect container value', () => {
+    let container = pw.PasswordContainer.newEmpty();
+    let entry = new pw.PasswordEntry(name, 'login', 'pass');
+    let newId = container.add(entry);
+    let newName = name + " Jr.";
 
-    // https://stackoverflow.com/questions/475074/regex-to-parse-or-validate-base64-data
-    // https://www.ietf.org/rfc/rfc4648.txt
-    let base64Regex = new RegExp('^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$');
-    expect(encryptedString).toMatch(base64Regex);
-});
+    // Ensure that the default name isn't this so the test actually does verify
+    // what we think it does.
+    expect(entry.name).not.toEqual(newName);
 
-test('Encrypt passsword collection')
+    let copiedEntry = container.getCopyOf(newId)!;
+    copiedEntry.name = newName;
+    expect(copiedEntry.name).not.toEqual(entry.name);
+}) 
+
+test('getCopyOf returns undefined for nonexisting index', () => {
+    let container = pw.PasswordContainer.newEmpty();
+    expect(container.getCopyOf(100)).toBeUndefined();
+}) 
+
+test('getCopyOf sets name from existing entry', () => {
+    let container = pw.PasswordContainer.newEmpty();
+    let entry = new pw.PasswordEntry(name, 'login', 'pass');
+    let idx = container.add(entry);
+    expect(container.getCopyOf(idx)!.name).toEqual(name);
+}) 
